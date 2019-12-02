@@ -21,3 +21,5 @@ For the odin project, to be put in my website portfolio
 2. Using Math methods.
 3. Designing CSS using grids.
 4. Designing logic for possible changes.
+
+Visit live here - https://codingyogurt.github.io/calculator-live/

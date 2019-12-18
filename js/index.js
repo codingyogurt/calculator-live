@@ -1,7 +1,11 @@
+// the big result text in DOM
 const resultText = document.querySelector(".p-result");
+// the equation text in DOM
 const equationText = document.querySelector(".p-equation");
+// the dot button to enable and disable depending on decimal point
 const btnDot = document.querySelector(".dot");
 
+// function that updates the equation text. filters dot usage to one
 const normalFunc = ((eContent) => {
     if (equationText.textContent === "0") {
         equationText.textContent =
@@ -14,12 +18,15 @@ const normalFunc = ((eContent) => {
     }
 });
 
+// event listener for each normal buttons (numbers) target is sent to normalFunc function
 document.querySelectorAll(".normal").forEach((btn) => {
     btn.addEventListener("click", (e) => {
         normalFunc(e.target.textContent);
     });
 });
 
+// function for special buttons (operators). updates the equation text depending on the class the button contains. Manages dot button also.
+// for equal, when activated, pass the whole equation text content to parseProblem function for calculation.
 const specialFunc = ((eClassList) => {
     if (eClassList.contains("ac")) {
         clearDisplay();
@@ -56,6 +63,14 @@ const specialFunc = ((eClassList) => {
     }
 });
 
+
+// event listener for special buttons (operators)
+document.querySelectorAll(".t").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+        specialFunc(btn.classList);
+    });
+
+});
 
 
 // keyboard support
@@ -118,14 +133,7 @@ window.addEventListener("keydown", (e) => {
 });
 
 
-
-document.querySelectorAll(".t").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-        specialFunc(btn.classList);
-    });
-
-});
-
+// check if there is an operator in the equation text. Used for decimal point restriction.
 const checkIfOperator = ((stringOperator) => {
     if (stringOperator.indexOf("x") >= 0) {
         return true;
@@ -143,6 +151,7 @@ const checkIfOperator = ((stringOperator) => {
     return false;
 });
 
+// updates the equation text. If operator is detected in the stringToAdd and endText of the equation, endText is set to the whole equation with last operator (3 because we include spaces) deleted. Then we add stringToAdd.
 const updateEquation = ((stringToAdd) => {
     const text = equationText.textContent;
     let endText = text.substr(text.length - 2, 2);
@@ -154,13 +163,16 @@ const updateEquation = ((stringToAdd) => {
     }
 });
 
+// backspace function
 const backSpace = () => {
     let text = equationText.textContent;
-
+    
+    // if dot is found in the solution disable dot button
     if (text.indexOf(".") >= 0) {
         btnDot.disabled = true;
     }
 
+    // if space is detected at the end of the equation. This indicates that endText is an operator so we delete 3 chars (spaces both side operator included)
     if (text.substr(text.length - 1, text.length) === " ") {
         text = text.substr(0, text.length - 3);
     } else {
@@ -169,11 +181,13 @@ const backSpace = () => {
 
     equationText.textContent = text;
 
+    // enables dot if endText is an operator. this means we can use dot even if dot is found as the function above.
     let dotCheck = text.substr(text.length - 3, 3);
     if (checkIfOperator(dotCheck)) {
         btnDot.disabled = false;
     }
 
+    // spaces turned to 0
     if (equationText.textContent === "") {
         equationText.textContent = "0";
         resultText.innerHTML =
@@ -188,6 +202,8 @@ const clearDisplay = () => {
         `<strong>0</strong>`;
 }
 
+// function to parse the problem. Accepts string problem. Uses space as an indicator for operands and operator
+// runs through the whole string detecting operators by MDAS order.Once operator is detected we get operatorIndex-1 as num1 and operatorIndex+1 as num2, then operate two nums depending on the operator. Once an operator is not detected anymore we jump to the next operator (M -> D -> A -> S) until S.
 const parseProblem = ((stringProblem) => {
     // check for syntax error
     let endText = stringProblem.substr(stringProblem.length - 2, 2);
@@ -255,6 +271,7 @@ const parseProblem = ((stringProblem) => {
     return Number(arrayProblem.join("")).toFixed(2);
 });
 
+// returns the operation solution depending on the operator string (symbol) passed.
 const operate = ((operator, num1, num2) => {
     if (operator === "x") { // MDAS
         return multiply(num1, num2);
@@ -270,6 +287,7 @@ const operate = ((operator, num1, num2) => {
     }
 });
 
+// for clearer visual of my functions
 const add = ((num1, num2) => {
     return Number(num1) + Number(num2);
 });

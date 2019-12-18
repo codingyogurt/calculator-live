@@ -1,6 +1,6 @@
 # Calculator Live
 
-A simple calculator wep app that can calculate strings of operations. Accepts only 1 decimal point for now.
+A simple calculator wep app that can calculate strings of operations. Accepts only 1 decimal point for now. https://ryecoder.github.io/calculator-live/
 
 ## Getting Started
 
